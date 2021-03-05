@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>FORUM</h1>
+    {% for post in posts %}
+        <p>{{ post.author.name }} says: <br>- <b style="color: blue">{{ post.body
+                }}</b></p>
+
+    {% endfor %}
+
+{% endblock %}
