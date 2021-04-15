@@ -1,9 +1,8 @@
-{% extends 'base.html' %}
-{% block content %}
+
 <table>
-<tr valign="top">
-    <td><img src="{{ post.author.avatar(36) }}" alt="no avatar"></td>
+<tr style="vert-align: top">
+    <td><img src="{{ post.author.avatar(30) }}" alt="no avatar"></td>
     <td>{{ post.author.username }} says:<br> {{ post.body }}</td>
 </tr>
 </table>
-{% endblock %}
+
