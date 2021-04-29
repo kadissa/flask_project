@@ -1,3 +1,4 @@
+from flask_login import current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo, Length
@@ -32,8 +33,17 @@ class RegistrationForm(FlaskForm):
 
 class EditProfile(FlaskForm):
     username = StringField(validators=[DataRequired()])
-    about_me = TextAreaField('About me', validators=[Length(min=0, max=140,
-                                                           message='tell '
-                                                                   'about '
-                                                                   'you')])
+    about_me = TextAreaField('About me', validators=[Length(min=0, max=140, message='tell about you')])
     submit = SubmitField('Submit')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user is not None and user != current_user:
+            raise ValidationError('take another name')
+
+class ChangePassword(FlaskForm):
+    password = PasswordField('old password', validators=[DataRequired()])
+    new_password = PasswordField('new password', validators=[DataRequired()])
+    password_2 = PasswordField('confirm password', validators=[DataRequired(),EqualTo('new_password')])
+    submit = SubmitField('Sign in')
+

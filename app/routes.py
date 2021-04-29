@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from datetime import datetime
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RegistrationForm, EditProfile
+from app.forms import LoginForm, RegistrationForm, EditProfile, ChangePassword
 from app.models import User
 
 
@@ -97,3 +97,19 @@ def edit_profile():
         form.about_me.data = current_user.about_me
     return render_template('edit_profile.html', form=form, title='Edit '
                                                                  'Profile')
+
+
+@app.route('/change_password', methods=['post', 'get'])
+@login_required
+def change_password():
+    form = ChangePassword()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=current_user.username).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('invalid password')
+            return redirect(url_for('change_password'))
+        user.set_password(form.new_password.data)
+        db.session.commit()
+        flash('password changed')
+        return redirect(url_for('edit_profile'))
+    return render_template('change_password.html', form=form)
